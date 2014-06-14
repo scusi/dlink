@@ -1,0 +1,12 @@
+<html>
+ <head>
+  <title>upload a file</title>
+ </head>
+ <body>
+  <h1>Upload</h1>
+   <form action="/do/{{.Filename}}" method="POST">
+    <input type="file" name="file">
+    <input type="submit" value="transform">
+   </form>
+ </body>
+</html>
