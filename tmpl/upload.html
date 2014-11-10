@@ -5,18 +5,36 @@
  <body>
      <h1>Make Links in Textdocuments unclickable</h1>
      <div id="upload"> 
+			 <h2>Input</h2>
          <p> Upload a text file with hyperlinks and get back a version where all occurences of http:// or https:// are replaced by hXXp:// or hXXps://.  </p> 
          <p> Maximum upload size is 1 Megabyte.  </p> 
-         <form action="/do/" method="post" enctype="multipart/form-data"> 
-             <input type="file" name="file"> 
-             <input type="submit" value="upload"> 
+         Upload a file:
+		 <form action="/do/" method="post" enctype="multipart/form-data"> 
+         <input type="file" name="file"> 
+         <input type="submit" value="upload"> 
          </form> 
+		 ...or enter Text:
+		 <form action="/undo/" method="post" enctype="multipart/form-data">
+		 <textarea name="file" rows="20" cols="80">{{printf "%s" .Content}}</textarea><br/>
+         <input type="submit" name="reverse" value="submit"> 
+		 </form>
+
      </div>
      {{if .Content}}
+	 <hr width="100%"/>
   <div id="content">
-		  <form action="/re/" method="post" enctype="multipart/form-data">
-				  <textarea name="file" rows="20" cols="80">{{printf "%s" .Content}}</textarea><br/>
-                      <input type="submit" value="reverse"> 
+		  <h2>Output</h2>
+				  {{if .Error}}
+		  			<form action="/undo/" method="post" enctype="multipart/form-data">
+				  	<textarea name="file" rows="20" cols="80">{{printf "%s" .ModifiedContent}}</textarea><br/>
+                    <input type="submit" name="reverse" value="replace http"> 
+					</form>
+				  {{else}}
+		  			<form action="/re/" method="post" enctype="multipart/form-data">
+				  	<textarea name="file" rows="20" cols="80">{{printf "%s" .ModifiedContent}}</textarea><br/>
+                    <input type="submit" name="reverse" value="replace hXXp"> 
+					</form>
+				  {{end}}
   </div>
   {{end}}
 

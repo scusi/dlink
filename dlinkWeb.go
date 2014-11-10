@@ -27,11 +27,12 @@ var templates = template.Must(
 )
 
 type File struct {
-    Name        string
-    Size        int
-    ContentType string
-    Content     []byte
-    Error       string
+    Name				string
+    Size				int
+    ContentType			string
+    Content				[]byte
+    ModifiedContent     []byte
+    Error				string
 }
 
 func upHandler(w http.ResponseWriter, r *http.Request) {
@@ -86,9 +87,31 @@ func doHandler(w http.ResponseWriter, r *http.Request) {
 	ValidateContent(w, p)
     // replace content
 	re := regexp.MustCompile(`http(s)?:\/\/`) // matches 'http://' as well as 'https://'
-	p.Content = re.ReplaceAll(p.Content, []byte("hXXp${1}://"))
+	p.ModifiedContent = re.ReplaceAll(p.Content, []byte("hXXp${1}://"))
     //t, _ := template.ParseFiles("tmpl/download.html")
     t, _ := template.ParseFiles("tmpl/upload.html")
+    t.Execute(w, p)
+}
+
+func undoHandler(w http.ResponseWriter, r *http.Request) {
+	log.Println("entering undoHandler...")
+	log.Printf("Request: %#v\n", r)
+	content:= []byte(r.FormValue("file"))
+    p := File{ "file", len(content), "text/plain", content, []byte{}, ""}
+	log.Printf("FormValue 'file': %s\n", p.Content)
+    //Input Validation
+	ValidateContent(w, p)
+    // replace content
+	log.Printf("perapring replacements, ")
+	re := regexp.MustCompile(`http(s)?:\/\/`) // matches 'http://' as well as 'https://'
+	log.Printf("replace\n")
+	p.ModifiedContent = re.ReplaceAll(p.Content, []byte("hXXp${1}://"))
+	p.Error = ""
+    //fmt.Fprintf(w, "%s", content)
+    //t, _ := template.ParseFiles("tmpl/download.html")
+	log.Printf("preparing template\n")
+    t, _ := template.ParseFiles("tmpl/upload.html")
+	log.Printf("executing template content size: '%d'\n", p.Size)
     t.Execute(w, p)
 }
 
@@ -96,15 +119,16 @@ func reHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("entering reHandler...")
 	log.Printf("Request: %#v\n", r)
 	content:= []byte(r.FormValue("file"))
-    p := File{ "file", len(content), "text/plain", content, ""}
+    p := File{ "file", len(content), "text/plain", content, []byte{}, ""}
 	log.Printf("FormValue 'file': %s\n", p.Content)
     //Input Validation
-	//ValidateContent(w, p)
+	ValidateContent(w, p)
     // replace content
 	log.Printf("perapring replacements, ")
 	re := regexp.MustCompile(`hXXp(s)?:\/\/`) // matches 'http://' as well as 'https://'
 	log.Printf("replace\n")
-	p.Content = re.ReplaceAll(p.Content, []byte("http${1}://"))
+	p.ModifiedContent = re.ReplaceAll(p.Content, []byte("http${1}://"))
+	p.Error = "rlink"
     //fmt.Fprintf(w, "%s", content)
     //t, _ := template.ParseFiles("tmpl/download.html")
 	log.Printf("preparing template\n")
@@ -126,6 +150,7 @@ func main() {
     http.HandleFunc("/", upHandler)
     http.HandleFunc("/up/", upHandler)
     http.HandleFunc("/do/", doHandler)
+    http.HandleFunc("/undo/", undoHandler)
     http.HandleFunc("/re/", reHandler)
     http.HandleFunc("/dump/", reqDumper)
     http.ListenAndServe(":9090", nil)
