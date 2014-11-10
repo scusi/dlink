@@ -14,7 +14,9 @@
      </div>
      {{if .Content}}
   <div id="content">
-      <textarea rows="20" cols="80">{{printf "%s" .Content}}</textarea>
+		  <form action="/re/" method="post" enctype="multipart/form-data">
+				  <textarea name="file" rows="20" cols="80">{{printf "%s" .Content}}</textarea><br/>
+                      <input type="submit" value="reverse"> 
   </div>
   {{end}}
 
