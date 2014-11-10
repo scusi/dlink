@@ -7,9 +7,6 @@
      <div id="upload"> 
          <p> Upload a text file with hyperlinks and get back a version where all occurences of http:// or https:// are replaced by hXXp:// or hXXps://.  </p> 
          <p> Maximum upload size is 1 Megabyte.  </p> 
-         {{if .Error}}
-         <p color="red">{{printf "%s" .Error}}</p>
-         {{end}}
          <form action="/do/" method="post" enctype="multipart/form-data"> 
              <input type="file" name="file"> 
              <input type="submit" value="upload"> 
