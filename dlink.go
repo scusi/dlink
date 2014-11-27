@@ -17,9 +17,11 @@ import (
 )
 
 var cmd string
+var cat bool
 
 func init(){
     flag.StringVar(&cmd, "cmd", "delink", "command, can be 'delink' and 'relink'. 'delink' is default")
+    flag.BoolVar(&cat, "cat", true, "if cat is set to 'true' result will be printed on stdout")
 }
 
 // checkErr a function to check the error return value of another function.
@@ -71,7 +73,11 @@ func main() {
 	    new_content := re.ReplaceAll(content, []byte("hXXp${1}://"))
 	    // write content (with replacements) back to file
 	    i := writeFile(new_content, filename+".dlinked")
+        if cat == true {
+            fmt.Printf("%s", new_content)
+            fmt.Println()
+        }
 	    // print out how many bytes we wrote onto what file
-	    fmt.Printf("%d bytes written to '%s'\n", i, filename+".dlinked")
+	    fmt.Printf("# %d bytes written to '%s'\n", i, filename+".dlinked")
 	}
 }
