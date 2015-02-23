@@ -1,8 +1,9 @@
-## Mission:
+## Mission
+
 I want to write a program in go that does render any link in a given text input unclickable.
 This is important if you publish malware links to others, in order to prevent people from clicking those links and get infected by accident.
 
-## Roadmap:
+## Roadmap
 
 Version 0.1 Proof of Concept
 Version 0.2 take input from command line, like: 'dlink http://www.host.tld'
