@@ -9,10 +9,10 @@
 package main
 
 import (
-	"os"
 	"fmt"
-	"regexp"
 	"io/ioutil"
+	"os"
+	"regexp"
 )
 
 // checkErr a function to check the error return value of another function.
@@ -53,17 +53,17 @@ func main() {
 	args := os.Args[1:]
 	// iterate over arguments
 	for i := 0; i < len(args); i++ {
-	    // get current filename from arguments
-	    filename := args[i]
-	    // load file content and check for errors
-	    content, err := loader(filename)
-	    checkErr(err)
-	    // replace what matches our regex
-	    //  replaces 'http://'  into 'hXXp://' or subsequent 'https://' into 'hXXps://'
-	    new_content := re.ReplaceAll(content, []byte("http${1}://"))
-	    // write content (with replacements) back to file
-	    i := writeFile(new_content, filename+".rlinked")
-	    // print out how many bytes we wrote onto what file
-	    fmt.Printf("%d bytes written to '%s'\n", i, filename+".rlinked")
-    }
+		// get current filename from arguments
+		filename := args[i]
+		// load file content and check for errors
+		content, err := loader(filename)
+		checkErr(err)
+		// replace what matches our regex
+		//  replaces 'http://'  into 'hXXp://' or subsequent 'https://' into 'hXXps://'
+		new_content := re.ReplaceAll(content, []byte("http${1}://"))
+		// write content (with replacements) back to file
+		i := writeFile(new_content, filename+".rlinked")
+		// print out how many bytes we wrote onto what file
+		fmt.Printf("%d bytes written to '%s'\n", i, filename+".rlinked")
+	}
 }

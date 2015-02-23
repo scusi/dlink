@@ -9,19 +9,19 @@
 package main
 
 import (
-	"os"
+	"flag"
 	"fmt"
-    "flag"
-	"regexp"
 	"io/ioutil"
+	"os"
+	"regexp"
 )
 
 var cmd string
 var cat bool
 
-func init(){
-    flag.StringVar(&cmd, "cmd", "delink", "command, can be 'delink' and 'relink'. 'delink' is default")
-    flag.BoolVar(&cat, "cat", true, "if cat is set to 'true' result will be printed on stdout")
+func init() {
+	flag.StringVar(&cmd, "cmd", "delink", "command, can be 'delink' and 'relink'. 'delink' is default")
+	flag.BoolVar(&cat, "cat", true, "if cat is set to 'true' result will be printed on stdout")
 }
 
 // checkErr a function to check the error return value of another function.
@@ -56,28 +56,28 @@ func writeFile(b []byte, filename string) (i int) {
 
 // main takes arbitary filenames as arguments from command line and rewrites those files.
 func main() {
-    flag.Parse()
+	flag.Parse()
 	// compile the regex, make sure it is valid and does actually compile
 	re := regexp.MustCompile(`http(s)?:\/\/`) // matches 'http://' as well as 'https://'
 	// get the arguments from the command line
 	args := os.Args[1:]
 	// iterate over arguments
 	for i := 0; i < len(args); i++ {
-	    // get current filename from arguments
-	    filename := args[i]
-	    // load file content and check for errors
-	    content, err := loader(filename)
-	    checkErr(err)
-	    // replace what matches our regex
-	    //  replaces 'http://'  into 'hXXp://' or subsequent 'https://' into 'hXXps://'
-	    new_content := re.ReplaceAll(content, []byte("hXXp${1}://"))
-	    // write content (with replacements) back to file
-	    i := writeFile(new_content, filename+".dlinked")
-        if cat == true {
-            fmt.Printf("%s", new_content)
-            fmt.Println()
-        }
-	    // print out how many bytes we wrote onto what file
-	    fmt.Printf("# %d bytes written to '%s'\n", i, filename+".dlinked")
+		// get current filename from arguments
+		filename := args[i]
+		// load file content and check for errors
+		content, err := loader(filename)
+		checkErr(err)
+		// replace what matches our regex
+		//  replaces 'http://'  into 'hXXp://' or subsequent 'https://' into 'hXXps://'
+		new_content := re.ReplaceAll(content, []byte("hXXp${1}://"))
+		// write content (with replacements) back to file
+		i := writeFile(new_content, filename+".dlinked")
+		if cat == true {
+			fmt.Printf("%s", new_content)
+			fmt.Println()
+		}
+		// print out how many bytes we wrote onto what file
+		fmt.Printf("# %d bytes written to '%s'\n", i, filename+".dlinked")
 	}
 }
