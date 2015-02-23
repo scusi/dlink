@@ -15,7 +15,5 @@ This is important if you publish malware links to others, in order to prevent pe
 
 dlink is also available as a webservice.
 
-Version 0.1 - paste some text in a text input field and get back the 
-modified version.
-
-Version 0.2 - upload a file, and get back the modified file as download.
+- Version 0.1 - paste some text in a text input field and get back the modified version.
+- Version 0.2 - upload a file, and get back the modified file as download.
